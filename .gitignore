@@ -1,0 +1,18 @@
+# Ignore node_modules in both folders
+/frontend/node_modules
+/backend/node_modules
+
+# Logs and environment files
+**/logs
+**/.env
+**/.DS_Store
+**/pnpm-debug.log*
+
+# Build outputs
+/frontend/.next
+/frontend/out
+/backend/dist
+
+# Optional: IDE junk
+**/.vscode/
+**/.idea/

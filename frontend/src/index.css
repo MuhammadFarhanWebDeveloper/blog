@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+.nav-link {
+    @apply after:absolute after:-bottom-1 after:content-[''] after:w-0 after:left-0 after:h-0.5 after:transition-all after:bg-red-500 hover:after:w-full after:duration-300;
+}
+
+.selected-nav {
+    @apply after:w-full;
+}
+
+
+
+button {
+    @apply cursor-pointer;
+}
+
+
+body {
+    @apply bg-gray-200;
+}
+
+
+
+/* You can put this in WritePage.css or global.css */
+
+.custom-editor {
+  @apply h-[400px] flex flex-col;
+}
+
+.custom-editor .ql-toolbar {
+  @apply border-b border-gray-300;
+  flex-shrink: 0;
+}
+
+.custom-editor .ql-container {
+  @apply flex-1 overflow-y-auto;
+  height: auto !important;
+}
+
+.custom-editor .ql-editor {
+  @apply h-full overflow-y-auto;
+}
