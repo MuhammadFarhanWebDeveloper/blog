@@ -6,13 +6,20 @@ import ImageKit from "imagekit";
 import { config } from "../lib/config";
 
 export const getPosts = async (req: Request, res: Response) => {
-  const posts = await Post.find();
+  const category = req.query.category;
+
+  const posts = await Post.find(category ? { category } : {})
+    .sort({ createdAt: -1 })
+    .populate("user", "username img");
   res.status(200).json(posts);
 };
 
 export const getOnePost = async (req: Request, res: Response) => {
   const slug = req.params.slug;
-  const post = await Post.findOne({ slug: slug });
+  const post = await Post.findOne({ slug: slug }).populate(
+    "user",
+    "username img"
+  );
   res.status(200).json(post);
 };
 
@@ -74,10 +81,10 @@ const imagekit = new ImageKit({
 });
 export const uploadAuth = async (req: Request, res: Response) => {
   const { token, expire, signature } = imagekit.getAuthenticationParameters();
-  console.log(token)
+  console.log(token);
   res.json({
     token,
-    name:"farhan",
+    name: "farhan",
     expire,
     signature,
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY,

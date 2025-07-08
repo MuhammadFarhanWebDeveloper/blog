@@ -13,7 +13,7 @@ const postRouter = express.Router();
 
 postRouter.get("/", getPosts);
 
-postRouter.get("/upload-auth", uploadAuth);
+postRouter.get("/upload-auth", customRequireAuth, uploadAuth);
 postRouter.get("/:slug", getOnePost);
 postRouter.post("/", customRequireAuth, createPost);
 postRouter.delete("/:id", customRequireAuth, deletePost);
