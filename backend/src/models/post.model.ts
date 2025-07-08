@@ -24,8 +24,14 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
+    category: {
+      type: String,
+      default: "general",
+    },
     content: {
       type: String,
+      required: true,
+      minLength:[50, "Content is too short"]
     },
     isFeatured: {
       type: Boolean,

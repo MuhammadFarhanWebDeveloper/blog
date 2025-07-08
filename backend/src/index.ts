@@ -6,17 +6,35 @@ import commentRouter from "./routes/comment.routes";
 import webhookRouter from "./routes/webhook.route";
 import { connectToDB } from "./lib/connectToDB";
 import { clerkMiddleware } from "@clerk/express";
-dotenv.config();
+import cors from "cors";
+import ImageKit from "imagekit";
 
 const app = express();
 const PORT = 3000;
-app.use(clerkMiddleware())
+
+dotenv.config();
+app.use(clerkMiddleware());
+const imagekit = new ImageKit({
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT!,
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
+});
 app.use("/webhooks", webhookRouter);
 interface ErrorWithStatus extends Error {
   status?: number;
 }
-
+console.log(process.env.IMAGEKIT_PUBLIC_KEY);
 app.use(express.json());
+app.use(cors({ origin: process.env.CLIENT_URL }));
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello TypeScript + Express!");

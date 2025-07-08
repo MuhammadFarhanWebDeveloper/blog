@@ -1,3 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import api from "../../services/api";
+
 const posts = [
   {
     id: 1,
@@ -20,7 +23,19 @@ const posts = [
   },
 ];
 
+const fetchPosts = async () => {
+  const res = await api.get("/posts");
+  return res.data;
+};
+
 export default function PostList() {
+  const { isPending, error, data } = useQuery({
+    queryKey: ["repoData"],
+    queryFn: () => fetchPosts(),
+  });
+
+  
+  console.log(data);
   return (
     <div className="space-y-6">
       {posts.map((post) => (
@@ -58,6 +73,6 @@ export default function PostList() {
           </div>
         </div>
       ))}
-    </div> 
+    </div>
   );
 }

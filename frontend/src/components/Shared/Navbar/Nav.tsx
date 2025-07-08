@@ -1,15 +1,15 @@
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { NAV_LINKS } from "../../../constants/nav_links";
 import { Link, useLocation } from "react-router";
-import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut,  UserButton } from "@clerk/clerk-react";
 type NavProps = {
   openMobileMenu: () => void;
 };
 
 function Nav({ openMobileMenu }: NavProps) {
 
-  const location = useLocation()
 
+  const location = useLocation();
 
   return (
     <div
