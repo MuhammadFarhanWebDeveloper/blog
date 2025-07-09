@@ -21,6 +21,7 @@ import { ToastContainer } from "react-toastify";
 import api from "./services/api";
 import ProtectedRoutes from "./components/Shared/ProtectedRoutes";
 import PublicRoutes from "./components/Shared/PublicRoutes";
+import MyPostsPage from "./pages/MyPostsPage";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,14 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePage /> },
       { path: "/posts", element: <PostListPage /> },
       { path: "/:slug", element: <SinglePostPage />, loader: fetchPost },
+      {
+        path: "/my-posts",
+        element: (
+          <ProtectedRoutes>
+            <MyPostsPage />
+          </ProtectedRoutes>
+        ),
+      },
       {
         path: "/write",
         element: (

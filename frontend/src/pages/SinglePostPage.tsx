@@ -4,11 +4,13 @@ import SearchBar from "../components/Shared/SearchBar";
 import Comments from "../components/SinglePostPage/Comments";
 import { formatDistanceToNow } from "date-fns";
 import { useEffect } from "react";
+import { FiClock, FiTag, FiUser } from "react-icons/fi";
+import { FaEye } from "react-icons/fa";
 
 export default function SinglePostPage() {
-  const data = useLoaderData();
+  const data: Post = useLoaderData();
 
-useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
   return (
@@ -18,15 +20,28 @@ useEffect(() => {
       <div className="flex flex-col-reverse lg:flex-row items-center justify-center gap-10 px-4 py-8">
         {/* Text Section */}
         <div className="lg:w-1/2 w-full">
-          <h1 className="text-2xl lg:text-3xl font-bold">{data.title} </h1>
-          <div className="my-4 text-gray-500 text-sm">
-            Written by{" "}
-            <span className="font-medium text-gray-700">
-              {data.user.username}
-            </span>
-            , on{" "}
-            <span className="text-indigo-600 font-medium">{data.category}</span>{" "}
-            • {formatDistanceToNow(data.createdAt)}
+          <h1 className="text-2xl lg:text-3xl my-5 font-bold">{data.title} </h1>
+          <div className="flex flex-wrap items-center text-sm text-gray-500 gap-3 mt-auto">
+            <span className="flex items-center gap-1  font-medium">
+              <FaEye />
+              <span>{data.visit}</span>
+            </span>{" "}
+            <div className="flex items-center  gap-1">
+              <FiUser className="text-gray-600" />
+              <span className="font-semibold text-gray-700 truncate max-w-[120px] inline-block">
+                {data.user.username}
+              </span>
+            </div>
+            <span className="hidden sm:inline">•</span>
+            <div className="flex items-center gap-1 text-indigo-600 font-medium">
+              <FiTag />
+              <span>{data.category}</span>
+            </div>
+            <span className="hidden sm:inline">•</span>
+            <div className="flex items-center gap-1">
+              <FiClock />
+              <span>{formatDistanceToNow(new Date(data.createdAt))} ago</span>
+            </div>
           </div>
           <p className="text-gray-700">{data.desc}</p>
         </div>
@@ -80,7 +95,7 @@ useEffect(() => {
             {/* social links */}
           </div>
           {/* Actions */}
-          <PostMenuActions postId={data._id} userId={data.user.clerkId} />
+          <PostMenuActions postId={data._id} userId={data.user.clerkId!} />
 
           {/* Categories */}
 

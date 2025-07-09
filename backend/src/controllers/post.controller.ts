@@ -13,13 +13,22 @@ export const getPosts = async (req: Request, res: Response) => {
   const limit = parseInt(req.query.limit as string) || 5;
   const page = parseInt(req.query.page as string) || 1;
   const category = req.query.category;
+
   const sort = req.query.sort as SortBy | undefined;
   const q = (req.query.search as string | undefined)?.trim();
   const skip = (page - 1) * limit;
 
+  const clerkId = req.query.clerkId;
+  let user;
+  if (clerkId) {
+    user = await User.findOne({ clerkId: clerkId });
+  }
+
   const filter: Record<string, any> = {};
   if (category) filter.category = category;
-
+  if (user) {
+    filter.user = user._id;
+  }
   if (q) {
     const normalizedQ = q.replace(/\s+/g, " ").trim();
     const safe = escapeRegExp(normalizedQ);

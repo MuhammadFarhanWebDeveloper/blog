@@ -4,6 +4,7 @@ declare global {
   interface User {
     username: string;
     img?: string;
+    clerkId?: string;
   }
 
   interface Post {
@@ -14,7 +15,9 @@ declare global {
     img?: string;
     category: string;
     createdAt: string;
+    content?: strinf;
     user: User;
+    visit?: number;
   }
 
   interface PaginatedPosts {

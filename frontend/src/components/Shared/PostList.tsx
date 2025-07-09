@@ -1,20 +1,23 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import api from "../../services/api";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { formatDistanceToNow } from "date-fns";
-import { Link, useSearchParams } from "react-router";
+import { useLocation, useSearchParams } from "react-router";
 import { FaSpinner } from "react-icons/fa";
+import PostCard from "./PostCard";
+import { useUser } from "@clerk/clerk-react";
 
 const fetchPosts = async ({
   pageParam = 1,
   category,
   search,
   sortBy,
+  clerkId,
 }: {
   pageParam: number;
   category: string | null;
   search: string | null;
   sortBy: string | null;
+  clerkId?: string | undefined;
 }): Promise<PaginatedPosts> => {
   const res = await api.get("/posts", {
     params: {
@@ -23,6 +26,7 @@ const fetchPosts = async ({
       limit: 3,
       search,
       sort: sortBy,
+      clerkId,
     },
   });
   return res.data;
@@ -30,15 +34,19 @@ const fetchPosts = async ({
 
 export default function PostList() {
   const [searchParams] = useSearchParams();
+  const { user, isLoaded, isSignedIn } = useUser();
   const category = searchParams.get("category");
   const search = searchParams.get("search");
   const sortBy = searchParams.get("sort");
-  console.log(sortBy);
+  const location = useLocation();
+
+  const clerkId = location.pathname == "/my-posts" ? user?.id : undefined;
+  console.log(location.pathname);
 
   const { data, fetchNextPage, hasNextPage, isPending } = useInfiniteQuery({
-    queryKey: ["posts", category, search, sortBy],
+    queryKey: ["posts", category, search, sortBy, clerkId],
     queryFn: ({ pageParam }) =>
-      fetchPosts({ pageParam, category, search, sortBy }),
+      fetchPosts({ pageParam, category, search, sortBy, clerkId }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
   });
@@ -87,38 +95,7 @@ export default function PostList() {
         }
       >
         {allPosts.map((post) => (
-          <Link
-            to={`/${post.slug}`}
-            key={post._id}
-            className="flex flex-col md:flex-row bg-white shadow-md rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 my-5"
-          >
-            {post.img && (
-              <img
-                src={post.img}
-                alt={post.title}
-                width="400"
-                height="300"
-                className="w-full md:w-1/3 h-64 object-cover"
-              />
-            )}
-            <div className="p-6 flex flex-col justify-center">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-                {post.title}
-              </h2>
-              <p className="text-gray-600 mb-4">{post.desc}</p>
-              <div className="text-sm text-gray-500">
-                Written by{" "}
-                <span className="font-medium text-gray-700">
-                  {post.user.username}
-                </span>
-                , in{" "}
-                <span className="text-indigo-600 font-medium">
-                  {post.category}
-                </span>{" "}
-                • {formatDistanceToNow(post.createdAt)}
-              </div>
-            </div>
-          </Link>
+          <PostCard post={post} key={post._id} />
         ))}
       </InfiniteScroll>
     </div>

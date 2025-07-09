@@ -1,6 +1,6 @@
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useMutation } from "@tanstack/react-query";
-import { FaSave } from "react-icons/fa";
+import { FaSave, FaSpinner } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import api from "../../services/api";
 import { toast } from "react-toastify";
@@ -16,6 +16,7 @@ export default function PostMenuActions({
   const { getToken } = useAuth();
   const { isLoaded, isSignedIn, user } = useUser();
   const navigate = useNavigate();
+
   const mutation = useMutation({
     mutationFn: async () => {
       const token = await getToken();
@@ -57,7 +58,11 @@ export default function PostMenuActions({
                 disabled={mutation.isPending}
                 className="text-red-600 flex gap-3 items-center my-3"
               >
-                <RiDeleteBin6Line size={18} />
+                {!mutation.isPending ? (
+                  <RiDeleteBin6Line size={18} />
+                ) : (
+                  <FaSpinner size={18} className="animate-spin " />
+                )}
                 <div>Delete Post</div>
               </button>
             </li>
