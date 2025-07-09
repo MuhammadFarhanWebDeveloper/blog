@@ -4,23 +4,79 @@ import { getAuth } from "@clerk/express";
 import User from "../models/user.model";
 import ImageKit from "imagekit";
 import { config } from "../lib/config";
+const escapeRegExp = (str: string): string =>
+  str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export const getPosts = async (req: Request, res: Response) => {
   const category = req.query.category;
+  const limit = parseInt(req.query.limit as string) || 5;
+  const page = parseInt(req.query.page as string) || 1;
+  const q = (req.query.search as string | undefined)?.trim();
+  const skip = (page - 1) * limit;
 
-  const posts = await Post.find(category ? { category } : {})
-    .sort({ createdAt: -1 })
-    .populate("user", "username img");
-  res.status(200).json(posts);
+  const filter: Record<string, any> = {};
+  if (category) filter.category = category;
+
+  if (q) {
+    // Case-insensitive search on title + description
+    const safe = escapeRegExp(q);
+    filter.$or = [
+      { title: { $regex: safe, $options: "i" } },
+      { description: { $regex: safe, $options: "i" } },
+    ];
+  }
+
+  const [posts, total] = await Promise.all([
+    Post.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "username clerkId img"),
+    Post.countDocuments(filter),
+  ]);
+
+  const hasMore = page * limit < total;
+
+  res.status(200).json({ posts, nextPage: hasMore ? page + 1 : null });
 };
 
 export const getOnePost = async (req: Request, res: Response) => {
-  const slug = req.params.slug;
-  const post = await Post.findOne({ slug: slug }).populate(
-    "user",
-    "username img"
-  );
-  res.status(200).json(post);
+  try {
+    const slug = req.params.slug;
+
+    let viewedPosts: string[] = [];
+
+    if (req.cookies?.viewedPosts) {
+      try {
+        viewedPosts = JSON.parse(req.cookies.viewedPosts);
+      } catch (err) {
+        console.error("Failed to parse viewedPosts cookie:", err);
+      }
+    }
+
+    const alreadyViewed = viewedPosts.includes(slug);
+
+    if (!alreadyViewed) {
+      await Post.findOneAndUpdate({ slug }, { $inc: { visit: 1 } });
+      viewedPosts.push(slug);
+      res.cookie("viewedPosts", JSON.stringify(viewedPosts), {
+        httpOnly: true,
+        maxAge: 5 * 24 * 60 * 60 * 1000,
+      });
+    }
+
+    const post = await Post.findOne({ slug }).populate(
+      "user",
+      "username clerkId img"
+    );
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const createPost = async (req: Request, res: Response) => {
