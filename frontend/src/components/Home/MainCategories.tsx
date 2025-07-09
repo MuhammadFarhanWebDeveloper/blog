@@ -4,9 +4,9 @@ import SearchBar from "../Shared/SearchBar";
 
 export default function MainCategories() {
   return (
-    <div className="hidden md:flex bg-gray-100 rounded-3xl xl:rounded-full px-4 p-2 shadow-lg justify-between items-center gap-6 max-w-6xl mx-auto">
+    <div className="flex bg-gray-100  rounded-3xl xl:rounded-full px-4 p-2 shadow-lg justify-between items-center gap-6 max-w-6xl mx-auto md:w-full w-fit">
       {/* Category Links */}
-      <div className="flex-1 flex items-center gap-4 flex-wrap">
+      <div className="flex-1 hidden md:flex items-center gap-4 flex-wrap">
         {Categories.map((cat, index) => (
           <Link
             to={`/posts?category=${cat}`}
@@ -19,7 +19,7 @@ export default function MainCategories() {
       </div>
 
       {/* Search Bar */}
-      <SearchBar bgColor="bg-gray-200" />
+      <SearchBar />
     </div>
   );
 }

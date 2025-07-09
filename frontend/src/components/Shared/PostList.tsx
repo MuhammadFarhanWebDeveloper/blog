@@ -9,10 +9,12 @@ const fetchPosts = async ({
   pageParam = 1,
   category,
   search,
+  sortBy,
 }: {
   pageParam: number;
   category: string | null;
   search: string | null;
+  sortBy: string | null;
 }): Promise<PaginatedPosts> => {
   const res = await api.get("/posts", {
     params: {
@@ -20,6 +22,7 @@ const fetchPosts = async ({
       category,
       limit: 3,
       search,
+      sort: sortBy,
     },
   });
   return res.data;
@@ -29,9 +32,13 @@ export default function PostList() {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const search = searchParams.get("search");
+  const sortBy = searchParams.get("sort");
+  console.log(sortBy);
+
   const { data, fetchNextPage, hasNextPage, isPending } = useInfiniteQuery({
-    queryKey: ["posts", category],
-    queryFn: ({ pageParam }) => fetchPosts({ pageParam, category, search }),
+    queryKey: ["posts", category, search, sortBy],
+    queryFn: ({ pageParam }) =>
+      fetchPosts({ pageParam, category, search, sortBy }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => lastPage.nextPage,
   });

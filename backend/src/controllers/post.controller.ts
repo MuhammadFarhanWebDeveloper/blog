@@ -7,10 +7,13 @@ import { config } from "../lib/config";
 const escapeRegExp = (str: string): string =>
   str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+type SortBy = "oldest" | "newest" | "most popular";
+
 export const getPosts = async (req: Request, res: Response) => {
-  const category = req.query.category;
   const limit = parseInt(req.query.limit as string) || 5;
   const page = parseInt(req.query.page as string) || 1;
+  const category = req.query.category;
+  const sort = req.query.sort as SortBy | undefined;
   const q = (req.query.search as string | undefined)?.trim();
   const skip = (page - 1) * limit;
 
@@ -18,17 +21,30 @@ export const getPosts = async (req: Request, res: Response) => {
   if (category) filter.category = category;
 
   if (q) {
-    // Case-insensitive search on title + description
-    const safe = escapeRegExp(q);
+    const normalizedQ = q.replace(/\s+/g, " ").trim();
+    const safe = escapeRegExp(normalizedQ);
+    const fuzzyRegex = new RegExp(safe.replace(/ /g, "\\s*"), "i");
+
     filter.$or = [
-      { title: { $regex: safe, $options: "i" } },
-      { description: { $regex: safe, $options: "i" } },
+      { title: { $regex: fuzzyRegex } },
+      { description: { $regex: fuzzyRegex } },
     ];
+  }
+
+  // 🧠 Determine sort field and direction
+  let sortField: string = "createdAt";
+  let sortDirection: 1 | -1 = -1;
+
+  if (sort === "oldest") {
+    sortDirection = 1;
+  } else if (sort === "most popular") {
+    sortField = "visit";
+    sortDirection = -1;
   }
 
   const [posts, total] = await Promise.all([
     Post.find(filter)
-      .sort({ createdAt: -1 })
+      .sort({ [sortField]: sortDirection })
       .skip(skip)
       .limit(limit)
       .populate("user", "username clerkId img"),

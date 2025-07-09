@@ -31,11 +31,7 @@ const postSchema = new Schema(
     content: {
       type: String,
       required: true,
-      minLength:[50, "Content is too short"]
-    },
-    isFeatured: {
-      type: Boolean,
-      default: false,
+      minLength: [50, "Content is too short"],
     },
     visit: {
       type: Number,
