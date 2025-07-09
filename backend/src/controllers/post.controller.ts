@@ -95,7 +95,10 @@ export const getOnePost = async (req: Request, res: Response) => {
       "username clerkId img"
     );
 
-    if (!post) return res.status(404).json({ message: "Post not found" });
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
 
     res.status(200).json(post);
   } catch (error) {
