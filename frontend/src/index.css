@@ -40,3 +40,9 @@ body {
 .custom-editor .ql-editor {
   @apply h-full overflow-y-auto;
 }
+
+
+
+#nprogress .bar {
+  background: red !important;
+}
