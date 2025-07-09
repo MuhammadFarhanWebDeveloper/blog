@@ -1,4 +1,3 @@
-import FeaturedPosts from "../components/Home/FeaturedPosts";
 import MainCategories from "../components/Home/MainCategories";
 import PostList from "../components/Shared/PostList";
 

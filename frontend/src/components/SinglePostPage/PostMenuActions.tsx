@@ -26,7 +26,7 @@ export default function PostMenuActions({
         },
       });
     },
-    onSuccess: (res) => {
+    onSuccess: () => {
       navigate("/");
     },
     onError: (error) => {

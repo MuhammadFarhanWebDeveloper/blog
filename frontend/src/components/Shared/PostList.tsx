@@ -34,7 +34,7 @@ const fetchPosts = async ({
 
 export default function PostList() {
   const [searchParams] = useSearchParams();
-  const { user, isLoaded, isSignedIn } = useUser();
+  const { user } = useUser();
   const category = searchParams.get("category");
   const search = searchParams.get("search");
   const sortBy = searchParams.get("sort");

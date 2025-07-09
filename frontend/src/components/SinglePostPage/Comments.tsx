@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../../services/api";
 import Comment from "./Comment";
 import { useAuth, useUser } from "@clerk/clerk-react";
-import { useState, type FormEvent, type Key } from "react";
+import { useState, type FormEvent } from "react";
 import { toast } from "react-toastify";
 
 const fetchComments = async (postId: string) => {
@@ -21,11 +21,7 @@ export default function Comments({ postId }: { postId: string }) {
   const [comment, setComment] = useState("");
   const { isLoaded, isSignedIn } = useUser();
   const queryClient = useQueryClient();
-  const {
-    isPending,
-    error,
-    data = [],
-  } = useQuery({
+  const { isPending, data = [] } = useQuery({
     queryKey: ["comments", postId],
     queryFn: () => fetchComments(postId),
   });
@@ -45,10 +41,14 @@ export default function Comments({ postId }: { postId: string }) {
         }
       );
     },
-    onSuccess: (res) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments"] });
     },
-    onError: (error) => {},
+    onError: (error) => {
+      console.log(error);
+
+      toast.error("Something went wrong!");
+    },
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -61,8 +61,6 @@ export default function Comments({ postId }: { postId: string }) {
 
     setComment("");
   };
-
-
 
   return (
     <div className="flex flex-col gap-8">

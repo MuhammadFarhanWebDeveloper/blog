@@ -1,5 +1,5 @@
 import React, { useState, type FormEvent } from "react";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import { useMutation } from "@tanstack/react-query";
 
 import ReactQuill from "react-quill-new";

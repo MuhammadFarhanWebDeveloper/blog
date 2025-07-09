@@ -20,7 +20,7 @@ export default function PostCard({ post }: { post: Post }) {
         },
       });
     },
-    onSuccess: (res) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast.success("Post has been deleted successfully!");
     },
