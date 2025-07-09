@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  type LoaderFunctionArgs,
+} from "react-router";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
@@ -14,6 +18,9 @@ import { ClerkProvider } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { ToastContainer } from "react-toastify";
+import api from "./services/api";
+import ProtectedRoutes from "./components/Shared/ProtectedRoutes";
+import PublicRoutes from "./components/Shared/PublicRoutes";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +30,11 @@ if (!PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key");
 }
 
+const fetchPost = async ({ params }: LoaderFunctionArgs) => {
+  const res = await api.get(`/posts/${params.slug}`);
+  return res.data;
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -30,10 +42,31 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/posts", element: <PostListPage /> },
-      { path: "/:slug", element: <SinglePostPage /> },
-      { path: "/write", element: <WritePage /> },
-      { path: "/login", element: <LoginPage /> },
-      { path: "/register", element: <RegisterPage /> },
+      { path: "/:slug", element: <SinglePostPage />, loader: fetchPost },
+      {
+        path: "/write",
+        element: (
+          <ProtectedRoutes>
+            <WritePage />
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <PublicRoutes>
+            <LoginPage />
+          </PublicRoutes>
+        ),
+      },
+      {
+        path: "/register",
+        element: (
+          <PublicRoutes>
+            <RegisterPage />
+          </PublicRoutes>
+        ),
+      },
     ],
   },
 ]);

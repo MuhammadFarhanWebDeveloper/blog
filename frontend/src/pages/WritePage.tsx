@@ -81,7 +81,6 @@ export default function WritePage() {
   };
 
   const navigate = useNavigate();
-  const { isLoaded, isSignedIn } = useUser();
   const { getToken } = useAuth();
   type PostData = {
     title: string;
@@ -124,17 +123,7 @@ export default function WritePage() {
     setFile(selectedFile);
   };
 
-  if (!isLoaded) {
-    return <div className="text-center mt-10 text-gray-600">Loading...</div>;
-  }
 
-  if (!isSignedIn) {
-    return (
-      <div className="text-center mt-10 text-red-500 font-semibold">
-        You must be logged in!
-      </div>
-    );
-  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -165,6 +154,21 @@ export default function WritePage() {
     } finally {
       setIsPending(false);
     }
+  };
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image"],
+      ["clean"],
+    ],
   };
 
   return (
@@ -227,8 +231,8 @@ export default function WritePage() {
           >
             {Categories.map((category) => {
               return (
-                <option value={category.value} key={category.value}>
-                  {category.label}
+                <option value={category} key={category}>
+                  {category}
                 </option>
               );
             })}
@@ -240,13 +244,11 @@ export default function WritePage() {
           className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         ></textarea>
         <div className="flex">
-          <div className="flex flex-col gap-3">
-            <button>Image</button>
-            <button>Video</button>
-          </div>
+      
           <ReactQuill
             theme="snow"
             value={contentValue}
+            modules={modules}
             onChange={setContentValue}
             className="flex-1 custom-editor"
           />

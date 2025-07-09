@@ -32,9 +32,7 @@ export default function SideMenu() {
           <ul className="flex flex-col gap-2 text-blue-800 underline">
             {Categories.map((category, index) => (
               <li key={index}>
-                <Link to={`/posts?category=${category.value}`}>
-                  {category.label}
-                </Link>
+                <Link to={`/posts?category=${category}`}>{category}</Link>
               </li>
             ))}
           </ul>

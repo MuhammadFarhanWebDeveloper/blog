@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .nav-link {
-    @apply after:absolute after:-bottom-1 after:content-[''] after:w-0 after:left-0 after:h-0.5 after:transition-all after:bg-red-500 hover:after:w-full after:duration-300;
+    @apply after:absolute  after:bottom-0 after:content-[''] after:w-0 after:left-0 after:h-0.5 after:transition-all after:bg-red-500 hover:after:w-full after:duration-300;
 }
 
 .selected-nav {

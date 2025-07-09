@@ -9,11 +9,11 @@ export default function MainCategories() {
       <div className="flex-1 flex items-center gap-4 flex-wrap">
         {Categories.map((cat, index) => (
           <Link
-            to={`/posts?category=${cat.value}`}
+            to={`/posts?category=${cat}`}
             key={index}
             className="px-3 py-1 rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 transition text-sm font-medium"
           >
-            {cat.label}
+            {cat}
           </Link>
         ))}
       </div>

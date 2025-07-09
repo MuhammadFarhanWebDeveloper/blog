@@ -1,14 +1,12 @@
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { NAV_LINKS } from "../../../constants/nav_links";
 import { Link, useLocation } from "react-router";
-import { SignedIn, SignedOut,  UserButton } from "@clerk/clerk-react";
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 type NavProps = {
   openMobileMenu: () => void;
 };
 
 function Nav({ openMobileMenu }: NavProps) {
-
-
   const location = useLocation();
 
   return (
@@ -43,7 +41,18 @@ function Nav({ openMobileMenu }: NavProps) {
               </Link>{" "}
             </SignedOut>
             <SignedIn>
-              <UserButton />
+              <div className="flex content-center gap-2">
+                <div
+                  className={`${
+                    location.pathname === "/write" && "selected-nav"
+                  } relative nav-link`}
+                >
+                  <Link to={"/write"}>
+                    <p className={``}>Write Post</p>
+                  </Link>
+                </div>
+                <UserButton />
+              </div>
             </SignedIn>
           </li>
         </ul>

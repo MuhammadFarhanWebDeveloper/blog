@@ -1,29 +1,16 @@
-import { FaFacebook, FaInstagram } from "react-icons/fa";
-import { Link, useParams } from "react-router";
+import { Link, useLoaderData } from "react-router";
 import PostMenuActions from "../components/SinglePostPage/PostMenuActions";
 import SearchBar from "../components/Shared/SearchBar";
 import Comments from "../components/SinglePostPage/Comments";
-import { useQuery } from "@tanstack/react-query";
-import api from "../services/api";
 import { formatDistanceToNow } from "date-fns";
-
-const fetchPost = async (slug: string) => {
-  const res = await api.get(`/posts/${slug}`);
-  return res.data;
-};
+import { useEffect } from "react";
 
 export default function SinglePostPage() {
-  const { slug } = useParams();
-  const { isPending, error, data } = useQuery({
-    queryKey: ["post", slug],
-    queryFn: () => fetchPost(slug!),
-  });
+  const data = useLoaderData();
 
-  if (isPending) {
-    return <div>Loading</div>;
-  }
-  console.log(data);
-
+useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="flex  pb-24 flex-col  gap-8">
       {/* detail */}
@@ -82,23 +69,18 @@ export default function SinglePostPage() {
                   height={64}
                   className="w-9 h-9 rounded-full object-cover"
                 />
-                <Link to={""} className="text-blue-800 max-w-[156px] truncate block  font-semibold">
+                <Link
+                  to={""}
+                  className="text-blue-800 max-w-[156px] truncate block  font-semibold"
+                >
                   {data.user.username}
                 </Link>
               </div>
-              <p className="text-sm ">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo
-                nesciunt voluptatum hic?
-              </p>
             </div>
             {/* social links */}
-            <div className="flex gap-4 items-center">
-              <FaFacebook size={25} />
-              <FaInstagram size={25} />
-            </div>
           </div>
           {/* Actions */}
-          <PostMenuActions />
+          <PostMenuActions postId={data._id} userId={data.user.clerkId} />
 
           {/* Categories */}
 

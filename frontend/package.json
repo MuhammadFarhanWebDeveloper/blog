@@ -22,7 +22,9 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-quill-new": "^3.4.6",
     "react-router": "^7.6.3",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "react-top-loading-bar": "^3.0.2",
+    "use-debounce": "^10.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
