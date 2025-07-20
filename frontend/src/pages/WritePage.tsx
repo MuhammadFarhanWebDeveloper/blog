@@ -103,6 +103,10 @@ export default function WritePage() {
       toast.success("Post has been created successfully");
       navigate(`/${res.data.slug}`);
     },
+    onError: (error) => {
+      console.log(error);
+      toast.error("Something went wrong!");
+    },
   });
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
