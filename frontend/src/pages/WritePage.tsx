@@ -141,6 +141,10 @@ export default function WritePage() {
         toast.error("Please fill out all required fields.");
         return;
       }
+      if(contentValue.length < 50){
+        toast.error("Content is too short")
+        return;
+      }
       setIsPending(true);
       const uploadResponse = await handleUpload(file);
       const image = uploadResponse?.url;
